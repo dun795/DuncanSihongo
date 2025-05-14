@@ -4,24 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duncan Sihongo - Programmer & Security Specialist</title>
-    <meta name="description" content="Professional programmer and CCTV installation specialist with expertise in web development, networking, and security solutions.">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> 
+    <meta name="description" content="Self-taught programmer and CCTV installation specialist offering comprehensive technical services.">
     
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+<link rel="stylesheet" href="styles.css">
+       
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans">
+<body>
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-gray-800/90 backdrop-blur-sm p-4 z-50 shadow-lg">
+    <nav class="fixed top-0 w-full bg-gray-800 bg-opacity-90 backdrop-blur-sm p-4 z-50 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
             <a href="#home" class="text-2xl font-bold gradient-text">Duncan Sihongo</a>
             <ul class="hidden md:flex space-x-8">
-                <li><a href="#home" class="nav-link hover:text-blue-400">Home</a></li>
-                <li><a href="#services" class="nav-link hover:text-blue-400">Services</a></li>
-                <li><a href="#about" class="nav-link hover:text-blue-400">About</a></li>
-                <li><a href="#contact" class="nav-link hover:text-blue-400">Contact</a></li>
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <button class="md:hidden text-2xl" id="mobile-menu-button">
+            <button class="md:hidden text-2xl text-white" id="mobile-menu-button">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -37,11 +50,8 @@
     </nav>
 
     <!-- Home Section -->
-    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-gray-900 to-blue-900 opacity-90 z-0"></div>
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1470&auto=format&fit=crop')] bg-cover bg-center opacity-20 z-0"></div>
-        
-        <div class="container mx-auto px-4 text-center z-10">
+    <section id="home" class="hero">
+        <div class="container mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-6">
                 <span class="gradient-text">Hi, I'm Duncan Sihongo</span>
             </h1>
@@ -49,10 +59,10 @@
                 I build secure digital solutions and physical security systems to protect your business.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="#services" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300">
+                <a href="#services" class="btn btn-primary">
                     My Services
                 </a>
-                <a href="#contact" class="bg-transparent border-2 border-blue-600 text-blue-400 hover:bg-blue-600/10 px-6 py-3 rounded-lg font-medium transition duration-300">
+                <a href="#contact" class="btn btn-outline">
                     Contact Me
                 </a>
             </div>
@@ -61,18 +71,18 @@
                 <a href="https://github.com/dun795" class="text-gray-400 hover:text-white text-2xl" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://linkedin.com/in/duncan-sihongo" class="text-gray-400 hover:text-white text-2xl" aria-label="LinkedIn">
+                <a href="https://linkedin.com/in/duncan-sihongo"class="text-gray-400 hover:text-white text-2xl" aria-label="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="https://twitter.com/yourusername" class="text-gray-400 hover:text-white text-2xl" aria-label="Twitter">
-                    <i class="fab fa-twitter"></i>
+                <a href="https://wa.me/0728540164" class="text-gray-400 hover:text-white text-2xl" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="py-20 bg-gray-800/50">
+    <section id="services" class="section bg-gray-800 bg-opacity-50">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">My Services</h2>
@@ -83,8 +93,8 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Networking Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer border border-gray-700 hover:border-blue-500">
-                    <div class="bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
+                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-network-wired text-2xl text-blue-400"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Networking Solutions</h3>
@@ -97,8 +107,8 @@
                 </div>
                 
                 <!-- CCTV Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer border border-gray-700 hover:border-blue-500">
-                    <div class="bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
+                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-video text-2xl text-blue-400"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">CCTV Installation</h3>
@@ -111,8 +121,8 @@
                 </div>
                 
                 <!-- Troubleshooting Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer border border-gray-700 hover:border-blue-500">
-                    <div class="bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
+                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-tools text-2xl text-blue-400"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">IT Support</h3>
@@ -125,8 +135,8 @@
                 </div>
                 
                 <!-- Web Development Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer border border-gray-700 hover:border-blue-500">
-                    <div class="bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
+                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-code text-2xl text-blue-400"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Web Development</h3>
@@ -142,18 +152,19 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-gray-800">
+    <section id="about" class="section bg-gray-800">
         <div class="container mx-auto px-4">
             <div class="flex flex-col lg:flex-row items-center">
                 <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
                     <div class="relative">
-                        <div class="w-64 h-64 md:w-80 md:h-80 bg-blue-900/20 rounded-full overflow-hidden mx-auto border-4 border-blue-600/30 shadow-xl">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1374&auto=format&fit=crop" alt="Duncan Sihongo" class="w-full h-full object-cover">
+                        <div class="profile-img-container">
+                          <!--image-->
+                            <img src="images/duncan.jpg" alt="Duncan Sihongo" class="w-full h-full object-cover">
                         </div>
                         <div class="absolute -bottom-4 -right-4 bg-gray-900 p-4 rounded-lg shadow-lg border border-gray-700">
                             <div class="text-center">
-                                <p class="text-2xl font-bold gradient-text mb-1"></p>
-                                <p class="text-sm text-gray-400">Years Experience</p>
+                                <p class="text-2xl font-bold gradient-text mb-1">Self-Taught</p>
+                                <p class="text-sm text-gray-400">Programmer</p>
                             </div>
                         </div>
                     </div>
@@ -162,32 +173,32 @@
                 <div class="lg:w-1/2">
                     <h2 class="text-3xl md:text-4xl font-bold mb-6 gradient-text">About Me</h2>
                     <p class="text-gray-300 mb-6">
-                        I'm a full-stack developer and security specialist with over  years of experience helping businesses secure their digital and physical assets. My unique combination of programming expertise and CCTV installation knowledge allows me to provide comprehensive security solutions.
+                        I'm a self-taught programmer and security specialist who has mastered all my skills through dedicated self-learning and hands-on experience. Without any formal teachers, I've developed expertise in both digital and physical security solutions through relentless practice and real-world application.
                     </p>
                     <p class="text-gray-300 mb-8">
-                        I specialize in creating efficient, secure systems that protect your business from both cyber and physical threats. Whether you need a custom web application, network infrastructure, or surveillance system, I deliver solutions that are reliable, scalable, and tailored to your specific needs.
+                        My journey has been one of independent learning and problem-solving. I specialize in creating efficient, secure systems that protect businesses from both cyber and physical threats. Whether you need a custom web application, network infrastructure, or surveillance system, I deliver solutions that are reliable, scalable, and tailored to your specific needs.
                     </p>
                     
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="flex items-center">
                             <i class="fas fa-check-circle text-blue-400 mr-2"></i>
-                            <span class="text-gray-300">Full-Stack Development</span>
+                            <span class="text-gray-300">Self-Taught Developer</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-check-circle text-blue-400 mr-2"></i>
-                            <span class="text-gray-300">Network Security</span>
+                            <span class="text-gray-300">Practical Experience</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-check-circle text-blue-400 mr-2"></i>
-                            <span class="text-gray-300">CCTV Systems</span>
+                            <span class="text-gray-300">Problem Solver</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-check-circle text-blue-400 mr-2"></i>
-                            <span class="text-gray-300">IT Consulting</span>
+                            <span class="text-gray-300">Continuous Learner</span>
                         </div>
                     </div>
                     
-                    <a href="#contact" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-300">
+                    <a href="#contact" class="btn btn-primary">
                         Get In Touch
                     </a>
                 </div>
@@ -196,7 +207,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gray-900">
+    <section id="contact" class="section bg-gray-900">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-16">
@@ -208,37 +219,37 @@
                 
                 <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                     <div class="md:flex">
-                        <div class="md:w-1/2 bg-gradient-to-br from-blue-900/50 to-gray-900 p-8 md:p-12">
+                        <div class="md:w-1/2 bg-gradient-to-br from-blue-900 from-opacity-50 to-gray-900 p-8 md:p-12">
                             <h3 class="text-xl font-bold mb-6">Contact Information</h3>
                             
                             <div class="space-y-6">
                                 <div class="flex items-start">
-                                    <div class="bg-blue-900/20 p-3 rounded-lg mr-4">
+                                    <div class="bg-blue-900 bg-opacity-20 p-3 rounded-lg mr-4">
                                         <i class="fas fa-envelope text-blue-400"></i>
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-300">Email</h4>
-                                        <a href="mailto:Duncansihongo@web.com" class="text-blue-400 hover:text-blue-300">Duncansihongo@gmail.com</a>
+                                        <a href="mailto:mygmail@gmail.com" class="text-blue-400 hover:text-blue-300">duncansihongo@gmail.com</a>
                                     </div>
                                 </div>
                                 
                                 <div class="flex items-start">
-                                    <div class="bg-blue-900/20 p-3 rounded-lg mr-4">
+                                    <div class="bg-blue-900 bg-opacity-20 p-3 rounded-lg mr-4">
                                         <i class="fas fa-phone-alt text-blue-400"></i>
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-300">Phone</h4>
-                                        <a href="tel:+1234567890" class="text-blue-400 hover:text-blue-300">+27 (72) 854-0164</a>
+                                        <a href="tel:+27234567890" class="text-blue-400 hover:text-blue-300">+27 (72) 854-0164</a>
                                     </div>
                                 </div>
                                 
                                 <div class="flex items-start">
-                                    <div class="bg-blue-900/20 p-3 rounded-lg mr-4">
-                                        <i class="fas fa-map-marker-alt text-blue-400"></i>
+                                    <div class="bg-blue-900 bg-opacity-20 p-3 rounded-lg mr-4">
+                                        <i class="fab fa-whatsapp text-blue-400"></i>
                                     </div>
                                     <div>
-                                        <h4 class="font-medium text-gray-300">Location</h4>
-                                        <p class="text-blue-400">South Africa</p>
+                                        <h4 class="font-medium text-gray-300">WhatsApp</h4>
+                                        <a href="https://wa.me/0728540164" class="text-blue-400 hover:text-blue-300">Chat on WhatsApp</a>
                                     </div>
                                 </div>
                             </div>
@@ -252,36 +263,33 @@
                                     <a href="https://linkedin.com/in/duncan-sihongo" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded-full flex items-center justify-center text-lg transition duration-300">
                                         <i class="fab fa-linkedin"></i>
                                     </a>
-                                    <a href="https://twitter.com/yourusername" class="bg-gray-700 hover:bg-gray-600 w-10 h-10 rounded-full flex items-center justify-center text-lg transition duration-300">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="md:w-1/2 p-8 md:p-12">
-                            <form action="https://formspree.io/f/your-form-id" method="POST" class="space-y-6">
+                            <form id="contact-form" class="space-y-6">
                                 <div>
                                     <label for="name" class="block text-gray-300 mb-2">Your Name</label>
-                                    <input type="text" id="name" name="name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                    <input type="text" id="name" name="from_name" class="form-input" required>
                                 </div>
                                 
                                 <div>
                                     <label for="email" class="block text-gray-300 mb-2">Email Address</label>
-                                    <input type="email" id="email" name="email" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                    <input type="email" id="email" name="from_email" class="form-input" required>
                                 </div>
                                 
                                 <div>
                                     <label for="subject" class="block text-gray-300 mb-2">Subject</label>
-                                    <input type="text" id="subject" name="subject" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                    <input type="text" id="subject" name="subject" class="form-input" required>
                                 </div>
                                 
                                 <div>
                                     <label for="message" class="block text-gray-300 mb-2">Your Message</label>
-                                    <textarea id="message" name="message" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required></textarea>
+                                    <textarea id="message" name="message" rows="4" class="form-input" required></textarea>
                                 </div>
                                 
-                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300">
+                                <button type="submit" class="btn btn-primary w-full">
                                     Send Message
                                 </button>
                             </form>
@@ -294,8 +302,8 @@
 
     <!-- Modals -->
     <!-- Networking Modal -->
-    <div id="networking-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 modal opacity-0 pointer-events-none">
-        <div class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95">
+    <div id="networking-modal" class="modal">
+        <div class="modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Networking Services</h3>
@@ -332,20 +340,20 @@
                     </ul>
                 </div>
                 
-                <form action="https://formspree.io/f/your-email" method="POST" class="space-y-4">
+                <form id="networking-form" class="space-y-4">
                     <div>
                         <label class="block text-gray-300 mb-1">Name</label>
-                        <input type="text" name="name" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="text" name="from_name" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Email</label>
-                        <input type="email" name="email" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="email" name="from_email" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Message</label>
-                        <textarea name="message" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required></textarea>
+                        <textarea name="message" rows="3" class="form-input" required></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">
+                    <button type="submit" class="btn btn-primary w-full">
                         Request Consultation
                     </button>
                 </form>
@@ -354,8 +362,8 @@
     </div>
 
     <!-- CCTV Modal -->
-    <div id="cctv-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 modal opacity-0 pointer-events-none">
-        <div class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95">
+    <div id="cctv-modal" class="modal">
+        <div class="modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">CCTV Services</h3>
@@ -392,32 +400,32 @@
                     </ul>
                 </div>
                 
-                <form action="https://formspree.io/f/your-email" method="POST" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
+                <form id="cctv-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-300 mb-1">First Name</label>
-                            <input type="text" name="first_name" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                            <input type="text" name="first_name" class="form-input" required>
                         </div>
                         <div>
                             <label class="block text-gray-300 mb-1">Last Name</label>
-                            <input type="text" name="last_name" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                            <input type="text" name="last_name" class="form-input" required>
                         </div>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Email</label>
-                        <input type="email" name="email" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="email" name="from_email" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Contact Number</label>
-                        <input type="tel" name="contact_number" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="tel" name="contact_number" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Location</label>
-                        <input type="text" name="location" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="text" name="location" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Service Needed</label>
-                        <select name="service_type" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <select name="service_type" class="form-input" required>
                             <option value="">Select service</option>
                             <option value="installation">Installation</option>
                             <option value="troubleshooting">Troubleshooting</option>
@@ -427,9 +435,9 @@
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Message</label>
-                        <textarea name="message" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required></textarea>
+                        <textarea name="message" rows="3" class="form-input" required></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">
+                    <button type="submit" class="btn btn-primary w-full">
                         Request Quote
                     </button>
                 </form>
@@ -438,8 +446,8 @@
     </div>
 
     <!-- Troubleshooting Modal -->
-    <div id="troubleshooting-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 modal opacity-0 pointer-events-none">
-        <div class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95">
+    <div id="troubleshooting-modal" class="modal">
+        <div class="modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">IT Support Services</h3>
@@ -476,20 +484,20 @@
                     </ul>
                 </div>
                 
-                <form action="https://formspree.io/f/your-email" method="POST" class="space-y-4">
+                <form id="troubleshooting-form" class="space-y-4">
                     <div>
                         <label class="block text-gray-300 mb-1">Name</label>
-                        <input type="text" name="name" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="text" name="from_name" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Email</label>
-                        <input type="email" name="email" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="email" name="from_email" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Issue Description</label>
-                        <textarea name="message" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required></textarea>
+                        <textarea name="message" rows="3" class="form-input" required></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">
+                    <button type="submit" class="btn btn-primary w-full">
                         Request Support
                     </button>
                 </form>
@@ -498,8 +506,8 @@
     </div>
 
     <!-- Web Development Modal -->
-    <div id="webdev-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 modal opacity-0 pointer-events-none">
-        <div class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95">
+    <div id="webdev-modal" class="modal">
+        <div class="modal-content">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Web Development</h3>
@@ -536,20 +544,20 @@
                     </ul>
                 </div>
                 
-                <form action="https://formspree.io/f/your-email" method="POST" class="space-y-4">
+                <form id="webdev-form" class="space-y-4">
                     <div>
                         <label class="block text-gray-300 mb-1">Name</label>
-                        <input type="text" name="name" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="text" name="from_name" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Email</label>
-                        <input type="email" name="email" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <input type="email" name="from_email" class="form-input" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 mb-1">Project Description</label>
-                        <textarea name="message" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" required></textarea>
+                        <textarea name="message" rows="3" class="form-input" required></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">
+                    <button type="submit" class="btn btn-primary w-full">
                         Discuss Project
                     </button>
                 </form>
@@ -558,20 +566,14 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900/80 py-8 border-t border-gray-800">
+    <footer class="bg-gray-900 bg-opacity-80 py-8 border-t border-gray-800">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <a href="#home" class="text-xl font-bold gradient-text">Duncan Sihongo</a>
                 </div>
                 
-                <div class="flex space-x-6 mb-4 md:mb-0">
-                    <a href="#home" class="text-gray-400 hover:text-white">Home</a>
-                    <a href="#services" class="text-gray-400 hover:text-white">Services</a>
-                    <a href="#about" class="text-gray-400 hover:text-white">About</a>
-                    <a href="#contact" class="text-gray-400 hover:text-white">Contact</a>
-                </div>
-                
+              
                 <div class="flex space-x-4">
                     <a href="https://github.com/dun795" class="text-gray-400 hover:text-white text-lg">
                         <i class="fab fa-github"></i>
@@ -579,19 +581,17 @@
                     <a href="https://linkedin.com/in/duncan-sihongo" class="text-gray-400 hover:text-white text-lg">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://twitter.com/yourusername" class="text-gray-400 hover:text-white text-lg">
-                        <i class="fab fa-twitter"></i>
+                    <a href="https://wa.me/0728540164" class="text-gray-400 hover:text-white text-lg">
+                        <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
             </div>
             
             <div class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-                <p>&copy; 2025 Duncan Sihongo. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> Duncan Sihongo. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
