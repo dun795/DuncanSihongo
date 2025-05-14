@@ -218,4 +218,7 @@
                 }
             });
         });
-    
+
+    .catch(error => {
+    console.error('Full error details:', error);  // Add this to see detailed error
+})
