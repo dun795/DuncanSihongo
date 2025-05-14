@@ -1,7 +1,7 @@
 
         // Initialize EmailJS with your user ID
         (function() {
-            emailjs.init('service_199u7yr');
+            emailjs.init('hWoqjWtrA9ReGybO5');
             
             // Set current year in footer
             document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -22,7 +22,7 @@
                 notification.classList.add('error');
                 
                 // Send error to your email
-                emailjs.send('service_199u7yr', 'template_vlrfz5n', {
+                emailjs.send('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', {
                     error_message: message,
                     page_url: window.location.href,
                     user_agent: navigator.userAgent
@@ -52,7 +52,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('service_199u7yr', 'template_vlrfz5n', this)
+                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
                     .then(() => {
                         showNotification('Your networking consultation request has been sent successfully!');
                         hideModal('networking');
