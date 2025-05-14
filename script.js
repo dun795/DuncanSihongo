@@ -1,7 +1,7 @@
 
         // Initialize EmailJS with your user ID
         (function() {
-            emailjs.init('YOUR_EMAILJS_USER_ID');
+            emailjs.init('service_199u7yr');
             
             // Set current year in footer
             document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -22,7 +22,7 @@
                 notification.classList.add('error');
                 
                 // Send error to your email
-                emailjs.send('YOUR_EMAILJS_SERVICE_ID', 'YOUR_ERROR_TEMPLATE_ID', {
+                emailjs.send('service_199u7yr', 'template_vlrfz5n', {
                     error_message: message,
                     page_url: window.location.href,
                     user_agent: navigator.userAgent
@@ -52,7 +52,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'YOUR_NETWORKING_TEMPLATE_ID', this)
+                emailjs.sendForm('service_199u7yr', 'template_vlrfz5n', this)
                     .then(() => {
                         showNotification('Your networking consultation request has been sent successfully!');
                         hideModal('networking');
@@ -74,7 +74,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'YOUR_CCTV_TEMPLATE_ID', this)
+                emailjs.sendForm('service_199u7yr', 'template_1kfpiwa', this)
                     .then(() => {
                         showNotification('Your CCTV service request has been sent successfully!');
                         hideModal('cctv');
@@ -96,7 +96,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'YOUR_TROUBLESHOOTING_TEMPLATE_ID', this)
+                emailjs.sendForm('service_199u7yr', 'template_vlrfz5n', this)
                     .then(() => {
                         showNotification('Your IT support request has been sent successfully!');
                         hideModal('troubleshooting');
@@ -118,7 +118,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'YOUR_WEBDEV_TEMPLATE_ID', this)
+                emailjs.sendForm('service_199u7yr', 'template_vlrfz5n', this)
                     .then(() => {
                         showNotification('Your web development inquiry has been sent successfully!');
                         hideModal('webdev');
@@ -140,7 +140,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'YOUR_MAIN_TEMPLATE_ID', this)
+                emailjs.sendForm('service_199u7yr', 'template_vlrfz5n', this)
                     .then(() => {
                         showNotification('Your message has been sent successfully!');
                         this.reset();
