@@ -1,1 +1,58 @@
-style
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+            }
+            50% {
+                transform: translateY(-10px);
+                box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2);
+            }
+        }
+        .service-card {
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            animation: float 3s ease-in-out infinite;
+            transform: scale(1.05);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Active nav link */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Modal transitions */
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    
