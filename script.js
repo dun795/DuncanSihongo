@@ -1,230 +1,145 @@
-
-        // Initialize EmailJS with your user ID
-        (function() {
-            emailjs.init('hWoqjWtrA9ReGybO5');
-            
-            // Set current year in footer
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Hide notification initially
-            document.getElementById('notification').classList.add('hidden');
-        })();
-
-        // Notification function
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            const notificationMessage = document.getElementById('notification-message');
-            
-            notificationMessage.textContent = message;
-            notification.classList.remove('hidden', 'error');
-            
-            if (isError) {
-                notification.classList.add('error');
-                
-                // Send error to your email
-                emailjs.send('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', {
-                    error_message: message,
-                    page_url: window.location.href,
-                    user_agent: navigator.userAgent
-                }).then(() => {
-                    console.log('Error report sent successfully');
-                }, (error) => {
-                    console.error('Failed to send error report:', error);
-                });
-            }
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.classList.add('hidden');
-                }, 300);
-            }, 5000);
-        }
-
-        // Form submission handlers
-        document.addEventListener('DOMContentLoaded', function() {
-            // Networking Form
-            document.getElementById('networking-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your networking consultation request has been sent successfully!');
-                        hideModal('networking');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Consultation';
-                    });
-            });
-            
-            // CCTV Form
-            document.getElementById('cctv-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your CCTV service request has been sent successfully!');
-                        hideModal('cctv');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Quote';
-                    });
-            });
-            
-            // Troubleshooting Form
-            document.getElementById('troubleshooting-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your IT support request has been sent successfully!');
-                        hideModal('troubleshooting');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Support';
-                    });
-            });
-            
-            // Web Development Form
-            document.getElementById('webdev-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your web development inquiry has been sent successfully!');
-                        hideModal('webdev');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Discuss Project';
-                    });
-            });
-            
-            // Main Contact Form
-            document.getElementById('contact-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your message has been sent successfully!');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Send Message';
-                    });
-            });
-        });
-        
-        // Modal functions
-        function showModal(service) {
-            const modal = document.getElementById(service + '-modal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function hideModal(service) {
-            const modal = document.getElementById(service + '-modal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Close modal when clicking outside
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                const modals = document.querySelectorAll('.modal');
-                modals.forEach(modal => {
-                    modal.classList.remove('active');
-                });
-                document.body.style.overflow = '';
-            }
-        });
-        
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Close mobile menu when clicking a link
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-        
-        // Active nav link highlighting
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        window.addEventListener('scroll', function() {
-            let current = '';
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                
-                if (pageYOffset >= (sectionTop - 100)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-                // Add this to script.js
-document.querySelectorAll('.smooth-scroll').forEach(link => {
-  link.addEventListener('click', (e) => {
+// Smooth Scrolling for Internal Links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function (e) {
     e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({ behavior: 'smooth' });
+
+    const target = document.querySelector(this.getAttribute("href"));
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    
+
+// Add animations on scroll
+const fadeInElements = document.querySelectorAll(".fade-in");
+
+const onScroll = () => {
+  fadeInElements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      el.classList.add("visible");
+    }
+  });
+};
+
+window.addEventListener("scroll", onScroll);
+
+// Trigger the scroll event to load visible elements on page load
+onScroll();
+
+// Initialize EmailJS
+emailjs.init("hWoqjWtrA9ReGybO5"); // Replace with your actual User ID
+
+// Handle Contact Form Submission
+const contactForm = document.getElementById("contactForm");
+
+contactForm.addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+
+  // Get form values
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  // Validate form inputs
+  if (name === "" || email === "" || message === "") {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  // Log the form values to the console for debugging
+  console.log("Form Data:", { name, email, message });
+
+  // Log before sending the email
+  console.log("Sending email...");
+
+  // Send email using EmailJS
+  emailjs
+    .send("service_199u7yr", "template_1kfpiwa", {
+      name: name,
+      email: email,
+      message: message,
+    })
+    .then(
+      function () {
+        // Log success
+        console.log("Email sent successfully!");
+        alert("Message sent successfully!");
+        contactForm.reset(); // Clear the form after successful submission
+      },
+      function (error) {
+        // Log error
+        console.error("Failed to send email:", error);
+        alert("Failed to send message. Error: " + error.text);
+      }
+    );
+});
+
+// Validate Email Function
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+// Chat Widget Toggle
+const chatToggle = document.getElementById("chat-toggle");
+const chatBox = document.getElementById("chat-box");
+
+chatToggle.addEventListener("click", function () {
+  chatBox.classList.toggle("hidden");
+});
+
+// Highlight the active navigation link
+const navLinks = document.querySelectorAll(".nav-links a");
+const currentPage = window.location.pathname.split("/").pop();
+
+navLinks.forEach(link => {
+  if (link.getAttribute("href") === currentPage) {
+    link.classList.add("active");
+  }
+});
+
+// JavaScript to toggle visibility of project info when clicking "View More"
+document.querySelectorAll('.view-more-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const projectInfo = button.nextElementSibling;
+    projectInfo.style.display = projectInfo.style.display === 'block' ? 'none' : 'block';
+  });
+});
+
+document.getElementById('cv-form').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const firstName = document.getElementById('first-name').value.trim();
+  const lastName = document.getElementById('last-name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const contact = document.getElementById('contact').value.trim();
+
+  if (firstName && lastName && email && contact.match(/^\d{10}$/)) {
+    // Send data to the server to be saved in a JSON file
+    fetch('/save-details', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ firstName, lastName, email, contact }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Show the download button if the details are saved
+      if (data.success) {
+        document.getElementById('download-btn').style.display = 'block';
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+    });
+  } else {
+    alert('Please fill in the details correctly.');
+  }
+});
