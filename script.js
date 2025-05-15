@@ -1,6 +1,6 @@
 // Initialize EmailJS with your user ID
 (function() {
-    // Initialize EmailJS with correct User ID (not Service ID)
+    // Initialize EmailJS with correct User ID
     emailjs.init('hWoqjWtrA9ReGybO5');
     
     // Set current year in footer
@@ -63,8 +63,25 @@ function createFormHandler(formId, successMessage, submitText, serviceId = 'serv
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-        emailjs.sendForm(serviceId, templateId, this)
-            .then(() => {
+        // Get form data and create parameters object
+        const formData = new FormData(this);
+        const params = {};
+        
+        // Convert FormData to object for EmailJS
+        formData.forEach((value, key) => {
+            params[key] = value;
+        });
+        
+        // Add form identifier to help with email template
+        params.form_id = formId;
+        
+        // DEBUG: Log parameters being sent
+        console.log('Sending form with params:', params);
+
+        // Use send instead of sendForm to have more control
+        emailjs.send(serviceId, templateId, params)
+            .then((response) => {
+                console.log('SUCCESS!', response.status, response.text);
                 showNotification(successMessage);
                 if (formId !== 'contact-form') {
                     hideModal(formId.replace('-form', ''));
@@ -72,8 +89,8 @@ function createFormHandler(formId, successMessage, submitText, serviceId = 'serv
                 this.reset();
             })
             .catch((error) => {
+                console.error('FAILED...', error);
                 showNotification('Failed to send message. Please try again later.', true);
-                console.error('Failed to send message:', error);
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -84,6 +101,14 @@ function createFormHandler(formId, successMessage, submitText, serviceId = 'serv
 
 // Initialize all form handlers
 document.addEventListener('DOMContentLoaded', function() {
+    // Verify EmailJS is loaded
+    if (typeof emailjs === 'undefined') {
+        console.error('EmailJS is not loaded properly');
+        return;
+    }
+    
+    console.log('EmailJS initialized and ready');
+    
     // Networking Form
     createFormHandler(
         'networking-form',
