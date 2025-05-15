@@ -10,15 +10,22 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
-<link rel="stylesheet" href="styles.css">
-       
+   
 </head>
 <body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
     <!-- Notification -->
     <div id="notification" class="notification">
         <span id="notification-message"></span>
@@ -52,13 +59,13 @@
     <!-- Home Section -->
     <section id="home" class="hero">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 slide-in-left">
                 <span class="gradient-text">Hi, I'm Duncan Sihongo</span>
             </h1>
-            <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
+            <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto slide-in-right delay-1">
                 I build secure digital solutions and physical security systems to protect your business.
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
+            <div class="flex flex-wrap justify-center gap-4 slide-in-up delay-2">
                 <a href="#services" class="btn btn-primary">
                     My Services
                 </a>
@@ -67,11 +74,11 @@
                 </a>
             </div>
             
-            <div class="mt-16 flex justify-center space-x-6">
+            <div class="mt-16 flex justify-center space-x-6 slide-in-up delay-3">
                 <a href="https://github.com/dun795" class="text-gray-400 hover:text-white text-2xl" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://linkedin.com/in/duncan-sihongo"class="text-gray-400 hover:text-white text-2xl" aria-label="LinkedIn">
+                <a href="https://linkedin.com/in/duncan-sihongo" class="text-gray-400 hover:text-white text-2xl" aria-label="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
                 <a href="https://wa.me/0728540164" class="text-gray-400 hover:text-white text-2xl" aria-label="WhatsApp">
@@ -93,59 +100,67 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Networking Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
-                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-network-wired text-2xl text-blue-400"></i>
+                <div class="service-card gradient-border">
+                    <div class="service-card-inner text-center cursor-pointer">
+                        <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-network-wired text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Networking Solutions</h3>
+                        <p class="text-gray-400 mb-4">
+                            Reliable network design, implementation, and optimization for businesses of all sizes.
+                        </p>
+                        <button onclick="showModal('networking')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                            Learn more <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Networking Solutions</h3>
-                    <p class="text-gray-400 mb-4">
-                        Reliable network design, implementation, and optimization for businesses of all sizes.
-                    </p>
-                    <button onclick="showModal('networking')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                        Learn more <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
                 </div>
                 
                 <!-- CCTV Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
-                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-video text-2xl text-blue-400"></i>
+                <div class="service-card gradient-border">
+                    <div class="service-card-inner text-center cursor-pointer">
+                        <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-video text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">CCTV Installation</h3>
+                        <p class="text-gray-400 mb-4">
+                            Professional surveillance systems tailored to your security requirements.
+                        </p>
+                        <button onclick="showModal('cctv')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                            Learn more <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">CCTV Installation</h3>
-                    <p class="text-gray-400 mb-4">
-                        Professional surveillance systems tailored to your security requirements.
-                    </p>
-                    <button onclick="showModal('cctv')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                        Learn more <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
                 </div>
                 
                 <!-- Troubleshooting Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
-                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-tools text-2xl text-blue-400"></i>
+                <div class="service-card gradient-border">
+                    <div class="service-card-inner text-center cursor-pointer">
+                        <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-tools text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">IT Support</h3>
+                        <p class="text-gray-400 mb-4">
+                            Comprehensive troubleshooting and maintenance for your hardware and software.
+                        </p>
+                        <button onclick="showModal('troubleshooting')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                            Learn more <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">IT Support</h3>
-                    <p class="text-gray-400 mb-4">
-                        Comprehensive troubleshooting and maintenance for your hardware and software.
-                    </p>
-                    <button onclick="showModal('troubleshooting')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                        Learn more <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
                 </div>
                 
                 <!-- Web Development Card -->
-                <div class="service-card bg-gray-800 p-8 rounded-xl shadow-lg text-center cursor-pointer">
-                    <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-code text-2xl text-blue-400"></i>
+                <div class="service-card gradient-border">
+                    <div class="service-card-inner text-center cursor-pointer">
+                        <div class="bg-blue-900 bg-opacity-20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-code text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Web Development</h3>
+                        <p class="text-gray-400 mb-4">
+                            Custom, responsive websites and web applications built with modern technologies.
+                        </p>
+                        <button onclick="showModal('webdev')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                            Learn more <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Web Development</h3>
-                    <p class="text-gray-400 mb-4">
-                        Custom, responsive websites and web applications built with modern technologies.
-                    </p>
-                    <button onclick="showModal('webdev')" class="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                        Learn more <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -158,8 +173,7 @@
                 <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
                     <div class="relative">
                         <div class="profile-img-container">
-                          <!--image-->
-                            <img src="images/Duncans.jpg" alt="Duncan Sihongo" class="w-full h-full object-cover">
+                            <img src="images/Duncans.jpg" alt="Duncan Sihongo - Programmer and Security Specialist" class="w-full h-full object-cover">
                         </div>
                         <div class="absolute -bottom-4 -right-4 bg-gray-900 p-4 rounded-lg shadow-lg border border-gray-700">
                             <div class="text-center">
@@ -229,7 +243,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-300">Email</h4>
-                                        <a href="mailto:mygmail@gmail.com" class="text-blue-400 hover:text-blue-300">duncansihongo@gmail.com</a>
+                                        <a href="mailto:duncansihongo@gmail.com" class="text-blue-400 hover:text-blue-300">duncansihongo@gmail.com</a>
                                     </div>
                                 </div>
                                 
@@ -239,7 +253,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-300">Phone</h4>
-                                        <a href="tel:+27234567890" class="text-blue-400 hover:text-blue-300">+27 (72) 854-0164</a>
+                                        <a href="tel:+27728540164" class="text-blue-400 hover:text-blue-300">+27 (72) 854-0164</a>
                                     </div>
                                 </div>
                                 
@@ -573,7 +587,6 @@
                     <a href="#home" class="text-xl font-bold gradient-text">Duncan Sihongo</a>
                 </div>
                 
-              
                 <div class="flex space-x-4">
                     <a href="https://github.com/dun795" class="text-gray-400 hover:text-white text-lg">
                         <i class="fab fa-github"></i>
@@ -592,18 +605,10 @@
             </div>
         </div>
     </footer>
-  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script src="script.js"></script>  
 
-  <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init({
-        publicKey: "hWoqjWtrA9ReGybO5",
-      });
-   })();
-</script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+   
 </body>
 </html>
