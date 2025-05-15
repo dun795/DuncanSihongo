@@ -120,23 +120,35 @@
             }, 5000);
         }
 
-        // Enhanced form submission handler
-        function handleFormSubmission(form, successMessage, modalId = null) {
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            
-            emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', form)
-                .then(() => {
-                    showNotification(successMessage);
-                    form.reset();
-                    if (modalId) hideModal(modalId);
-                    
-                    // Log successful submission
-                    console.log(`Form submitted successfully: ${form.id}`);
-                }, (error) => {
-                    const errorMsg = `Failed to send message (Error: ${error.status})`;
-                    showNotification(errorMsg, true);
+       // Modify your handleFormSubmission function to include this:
+function handleFormSubmission(form, successMessage, modalId = null) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', form)
+        .then(() => {
+            showNotification(successMessage);
+            // Clear the form after successful submission
+            form.reset();
+            if (modalId) hideModal(modalId);
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = submitBtn.dataset.originalText || 'Submit';
+            // Force a hard reload if needed
+            if (window.performance && performance.navigation.type === 1) {
+                window.location.reload(true);
+            }
+        });
+}
+
+// Add this to prevent browser caching
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
                     
                     // Enhanced error logging
                     console.error('Form submission failed:', {
