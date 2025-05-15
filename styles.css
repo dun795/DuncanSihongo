@@ -67,7 +67,10 @@
             perspective: 1000px;
             transform-style: preserve-3d;
             transition: transform 0.6s ease;
+            position: relative;
+            height: 100%;
         }
+
 
         .service-card:hover {
             transform: rotateY(15deg) scale(1.05);
@@ -84,35 +87,16 @@
             border-radius: 0.5rem;
             padding: 2rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            bacface-visibility: hidden;
+            -webkit-backface-visiblity: hidden;
         }
 
         .service-card:hover .service-card-inner {
-            transform: rotateY(15deg);
+            transform: rotateY(10deg) scale(1.02);
         }
 
-        /* Gradient Border Effect */
-        .gradient-border {
-            position: relative;
-            border-radius: 0.5rem;
-        }
+      
 
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 0.5rem;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gradient-border:hover::before {
-            opacity: 1;
-        }
 
         /* Smooth scrolling */
         html {
