@@ -1,14 +1,91 @@
+ // Initialize EmailJS
+        (function(){
+            emailjs.init({
+                publicKey: "hWoqjWtrA9ReGybO5",
+            });
+        })();
 
-        // Initialize EmailJS with your user ID
-        (function() {
-            emailjs.init('hWoqjWtrA9ReGybO5');
+        // Page Loader
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.createElement('div');
+            loader.className = 'page-loader';
+            loader.innerHTML = '<div class="loader-spinner"></div>';
+            document.body.appendChild(loader);
+            
+            // Show loader before page unload
+            window.addEventListener('beforeunload', function() {
+                loader.classList.add('active');
+            });
+            
+            // Hide loader when page is fully loaded
+            setTimeout(() => {
+                loader.classList.remove('active');
+            }, 500);
             
             // Set current year in footer
             document.getElementById('current-year').textContent = new Date().getFullYear();
             
-            // Hide notification initially
-            document.getElementById('notification').classList.add('hidden');
-        })();
+            // Initialize particles.js
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#3b82f6" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#3b82f6", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    }
+                }
+            });
+            
+            // Typing animation for hero text
+            const heroTitle = document.querySelector('.hero h1 .gradient-text');
+            if (heroTitle) {
+                const originalText = heroTitle.textContent;
+                heroTitle.textContent = '';
+                setTimeout(() => {
+                    typeWriter(heroTitle, originalText);
+                }, 500);
+            }
+            
+            // Initialize Intersection Observer for scroll animations
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // Typing animation function
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.textContent = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
 
         // Notification function
         function showNotification(message, isError = false) {
@@ -43,115 +120,72 @@
             }, 5000);
         }
 
-        // Form submission handlers
+        // Enhanced form submission handler
+        function handleFormSubmission(form, successMessage, modalId = null) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', form)
+                .then(() => {
+                    showNotification(successMessage);
+                    form.reset();
+                    if (modalId) hideModal(modalId);
+                    
+                    // Log successful submission
+                    console.log(`Form submitted successfully: ${form.id}`);
+                }, (error) => {
+                    const errorMsg = `Failed to send message (Error: ${error.status})`;
+                    showNotification(errorMsg, true);
+                    
+                    // Enhanced error logging
+                    console.error('Form submission failed:', {
+                        formId: form.id,
+                        error: error.text,
+                        formData: Object.fromEntries(new FormData(form))
+                    });
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = submitBtn.dataset.originalText || 'Submit';
+                });
+        }
+
+        // Initialize all forms
         document.addEventListener('DOMContentLoaded', function() {
+            // Store original button text
+            document.querySelectorAll('form button[type="submit"]').forEach(btn => {
+                btn.dataset.originalText = btn.textContent;
+            });
+
             // Networking Form
             document.getElementById('networking-form')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your networking consultation request has been sent successfully!');
-                        hideModal('networking');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Consultation';
-                    });
+                handleFormSubmission(this, 'Networking consultation request sent!', 'networking');
             });
             
             // CCTV Form
             document.getElementById('cctv-form')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your CCTV service request has been sent successfully!');
-                        hideModal('cctv');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Quote';
-                    });
+                handleFormSubmission(this, 'CCTV service request sent!', 'cctv');
             });
             
             // Troubleshooting Form
             document.getElementById('troubleshooting-form')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your IT support request has been sent successfully!');
-                        hideModal('troubleshooting');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Request Support';
-                    });
+                handleFormSubmission(this, 'IT support request sent!', 'troubleshooting');
             });
             
             // Web Development Form
             document.getElementById('webdev-form')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your web development inquiry has been sent successfully!');
-                        hideModal('webdev');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Discuss Project';
-                    });
+                handleFormSubmission(this, 'Web development inquiry sent!', 'webdev');
             });
             
             // Main Contact Form
             document.getElementById('contact-form')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const submitBtn = this.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                
-                emailjs.sendForm('YOUR_EMAILJS_SERVICE_ID', 'template_vlrfz5n', this)
-                    .then(() => {
-                        showNotification('Your message has been sent successfully!');
-                        this.reset();
-                    }, (error) => {
-                        showNotification('Failed to send message. Please try again later.', true);
-                        console.error('Failed to send message:', error);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Send Message';
-                    });
+                handleFormSubmission(this, 'Your message has been sent successfully!');
             });
         });
         
@@ -210,15 +244,6 @@
                     current = section.getAttribute('id');
                 }
             });
-
-                // Add this to script.js
-document.querySelectorAll('.smooth-scroll').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({ behavior: 'smooth' });
-  });
-});
             
             navLinks.forEach(link => {
                 link.classList.remove('active');
@@ -227,4 +252,16 @@ document.querySelectorAll('.smooth-scroll').forEach(link => {
                 }
             });
         });
-    
+
+        // Smooth scrolling for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
