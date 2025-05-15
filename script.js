@@ -210,6 +210,15 @@
                     current = section.getAttribute('id');
                 }
             });
+
+                // Add this to script.js
+document.querySelectorAll('.smooth-scroll').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
             
             navLinks.forEach(link => {
                 link.classList.remove('active');
