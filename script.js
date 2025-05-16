@@ -149,7 +149,7 @@ function showNotification(message, isError = false) {
         notification.classList.add('error');
         
         // Send error to your email
-        emailjs.send('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', {
+        emailjs.send('service_9f71ccn', 'template_vlrfz5n', {
             error_message: message,
             page_url: window.location.href,
             user_agent: navigator.userAgent
@@ -177,7 +177,7 @@ function handleFormSubmission(form, successMessage, modalId = null) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     
-    emailjs.sendForm('hWoqjWtrA9ReGybO5', 'template_vlrfz5n', form)
+    emailjs.sendForm('service_9f71ccn', 'template_vlrfz5n', form)
         .then(() => {
             showNotification(successMessage);
             form.reset();
