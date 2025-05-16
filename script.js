@@ -1,7 +1,7 @@
 // Initialize EmailJS
 (function(){
     emailjs.init({
-        publicKey: "hWoqjWtrA9ReGybO5",
+        publicKey: "service_9f71ccn",
     });
 })();
 
