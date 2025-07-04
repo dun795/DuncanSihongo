@@ -1,4 +1,6 @@
-
+// Page Loader
+document.addEventListener('DOMContentLoaded', function() {
+    const loader = document.createElement('div');
     loader.className = 'page-loader';
     loader.innerHTML = '<div class="loader-spinner"></div>';
     document.body.appendChild(loader);
@@ -15,7 +17,6 @@
     
     // Set current year in footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
-    
     // Initialize particles.js
     particlesJS('particles-js', {
         particles: {
