@@ -1,9 +1,4 @@
-// Initialize EmailJS
-(function(){
-    emailjs.init({
-        publicKey: "PMe7p2aB6o1OnkkjV",
-    });
-})();
+
 
 // Page Loader
 document.addEventListener('DOMContentLoaded', function() {
