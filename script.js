@@ -1,9 +1,9 @@
-// Supabase configuration
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Replace with your Supabase URL
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Replace with your Supabase anon key
-
-// Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialize EmailJS
+(function(){
+    emailjs.init({
+        publicKey: "PMe7p2aB6o1OnkkjV",
+    });
+})();
 
 // Page Loader
 document.addEventListener('DOMContentLoaded', function() {
@@ -148,8 +148,16 @@ function showNotification(message, isError = false) {
     if (isError) {
         notification.classList.add('error');
         
-        // Log error to Supabase
-        logErrorToSupabase(message);
+        // Send error to your email
+        emailjs.send('service_9f71ccn', 'template_vlrfz5n', {
+            error_message: message,
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+        }).then(() => {
+            console.log('Error report sent successfully');
+        }, (error) => {
+            console.error('Failed to send error report:', error);
+        });
     }
     
     notification.classList.add('show');
@@ -162,89 +170,36 @@ function showNotification(message, isError = false) {
     }, 5000);
 }
 
-// Function to log errors to Supabase
-async function logErrorToSupabase(errorMessage) {
-    try {
-        const { error } = await supabase
-            .from('error_logs')
-            .insert([
-                {
-                    error_message: errorMessage,
-                    page_url: window.location.href,
-                    user_agent: navigator.userAgent,
-                    timestamp: new Date().toISOString()
-                }
-            ]);
-        
-        if (error) {
-            console.error('Failed to log error to Supabase:', error);
-        }
-    } catch (err) {
-        console.error('Error logging to Supabase:', err);
-    }
-}
-
-// Function to send data to Supabase
-async function sendToSupabase(formData, tableName) {
-    try {
-        const { data, error } = await supabase
-            .from(tableName)
-            .insert([formData]);
-        
-        if (error) {
-            throw error;
-        }
-        
-        return { success: true, data };
-    } catch (error) {
-        console.error('Supabase error:', error);
-        return { success: false, error: error.message };
-    }
-}
-
 // Enhanced form submission handler
-async function handleFormSubmission(form, successMessage, modalId = null, tableName = 'contacts') {
+function handleFormSubmission(form, successMessage, modalId = null) {
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     
-    // Get form data
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    
-    // Add timestamp and form type
-    data.submitted_at = new Date().toISOString();
-    data.form_type = form.id;
-    data.page_url = window.location.href;
-    
-    try {
-        const result = await sendToSupabase(data, tableName);
-        
-        if (result.success) {
+    emailjs.sendForm('service_9f71ccn', 'template_vlrfz5n', form)
+        .then(() => {
             showNotification(successMessage);
             form.reset();
             if (modalId) hideModal(modalId);
             
             // Log successful submission
             console.log(`Form submitted successfully: ${form.id}`);
-        } else {
-            throw new Error(result.error);
-        }
-    } catch (error) {
-        const errorMsg = `Failed to send message: ${error.message}`;
-        showNotification(errorMsg, true);
-        
-        // Enhanced error logging
-        console.error('Form submission failed:', {
-            formId: form.id,
-            error: error.message,
-            formData: data
+        }, (error) => {
+            const errorMsg = `Failed to send message (Error: ${error.status})`;
+            showNotification(errorMsg, true);
+            
+            // Enhanced error logging
+            console.error('Form submission failed:', {
+                formId: form.id,
+                error: error.text,
+                formData: Object.fromEntries(new FormData(form))
+            });
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
         });
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-    }
 }
 
 // Initialize all forms
@@ -257,31 +212,31 @@ function initializeForms() {
     // Networking Form
     document.getElementById('networking-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        handleFormSubmission(this, 'Networking consultation request sent!', 'networking', 'networking_requests');
+        handleFormSubmission(this, 'Networking consultation request sent!', 'networking');
     });
     
     // CCTV Form
     document.getElementById('cctv-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        handleFormSubmission(this, 'CCTV service request sent!', 'cctv', 'cctv_requests');
+        handleFormSubmission(this, 'CCTV service request sent!', 'cctv');
     });
     
     // Troubleshooting Form
     document.getElementById('troubleshooting-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        handleFormSubmission(this, 'IT support request sent!', 'troubleshooting', 'support_requests');
+        handleFormSubmission(this, 'IT support request sent!', 'troubleshooting');
     });
     
     // Web Development Form
     document.getElementById('webdev-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        handleFormSubmission(this, 'Web development inquiry sent!', 'webdev', 'webdev_requests');
+        handleFormSubmission(this, 'Web development inquiry sent!', 'webdev');
     });
     
     // Main Contact Form
     document.getElementById('contact-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        handleFormSubmission(this, 'Your message has been sent successfully!', null, 'general_contacts');
+        handleFormSubmission(this, 'Your message has been sent successfully!');
     });
 }
 
