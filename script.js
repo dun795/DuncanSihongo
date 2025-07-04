@@ -280,3 +280,127 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// Add this function to save messages to Supabase
+async function saveMessageToSupabase(formData, serviceType = null) {
+    try {
+        const messageData = {
+            name: formData.get('from_name') || `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+            email: formData.get('from_email'),
+            subject: formData.get('subject') || serviceType || 'General Inquiry',
+            message: formData.get('message'),
+            service_type: serviceType || formData.get('service_type'),
+            contact_number: formData.get('contact_number'),
+            location: formData.get('location'),
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name')
+        };
+
+        const { data, error } = await supabase
+            .from('messages')
+            .insert([messageData]);
+
+        if (error) {
+            throw error;
+        }
+
+        console.log('Message saved to Supabase:', data);
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error saving to Supabase:', error);
+        return { success: false, error };
+    }
+}
+
+// Update the handleFormSubmission function
+function handleFormSubmission(form, successMessage, modalId = null) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    // Get form data
+    const formData = new FormData(form);
+    const serviceType = getServiceTypeFromForm(form, modalId);
+    
+    // Save to Supabase and send email concurrently
+    Promise.all([
+        saveMessageToSupabase(formData, serviceType),
+        emailjs.sendForm('service_9f71ccn', 'template_vlrfz5n', form)
+    ])
+        .then(([supabaseResult, emailResult]) => {
+            if (supabaseResult.success) {
+                showNotification(successMessage);
+                form.reset();
+                if (modalId) hideModal(modalId);
+                
+                console.log(`Form submitted successfully: ${form.id}`);
+            } else {
+                throw new Error('Failed to save message to database');
+            }
+        })
+        .catch((error) => {
+            const errorMsg = `Failed to send message: ${error.message}`;
+            showNotification(errorMsg, true);
+            
+            console.error('Form submission failed:', {
+                formId: form.id,
+                error: error,
+                formData: Object.fromEntries(formData)
+            });
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+}
+
+// Helper function to determine service type from form
+function getServiceTypeFromForm(form, modalId) {
+    const serviceMap = {
+        'networking': 'Networking Services',
+        'cctv': 'CCTV Services', 
+        'troubleshooting': 'IT Support',
+        'webdev': 'Web Development'
+    };
+    
+    return serviceMap[modalId] || 'General Contact';
+}
+
+// Update the initializeForms function with the new service type logic
+function initializeForms() {
+    // Store original button text
+    document.querySelectorAll('form button[type="submit"]').forEach(btn => {
+        btn.dataset.originalText = btn.textContent;
+    });
+
+    // Networking Form
+    document.getElementById('networking-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(this, 'Networking consultation request sent!', 'networking');
+    });
+    
+    // CCTV Form
+    document.getElementById('cctv-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(this, 'CCTV service request sent!', 'cctv');
+    });
+    
+    // Troubleshooting Form
+    document.getElementById('troubleshooting-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(this, 'IT support request sent!', 'troubleshooting');
+    });
+    
+    // Web Development Form
+    document.getElementById('webdev-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(this, 'Web development inquiry sent!', 'webdev');
+    });
+    
+    // Main Contact Form
+    document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(this, 'Your message has been sent successfully!');
+    });
+}
