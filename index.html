@@ -14,6 +14,15 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Add this script tag before your main script.js -->
+<script>
+// Supabase configuration
+const SUPABASE_URL = 'https://zoaethjjfapyylusneep.supabase.co'; // Replace with your actual Supabase URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpvYWV0aGpqZmFweXlsdXNuZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0NDcyNzQsImV4cCI6MjA2NzAyMzI3NH0.LLBRKpw3fqgx_EDzjVO67xAMl1WWsaKrsaKgexcp6Qk'; // Replace with your actual anon key
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
 </head>
 <body>
     <!-- Page Loader -->
