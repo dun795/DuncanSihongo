@@ -1,8 +1,4 @@
 
-
-// Page Loader
-document.addEventListener('DOMContentLoaded', function() {
-    const loader = document.createElement('div');
     loader.className = 'page-loader';
     loader.innerHTML = '<div class="loader-spinner"></div>';
     document.body.appendChild(loader);
@@ -140,20 +136,7 @@ function showNotification(message, isError = false) {
     notificationMessage.textContent = message;
     notification.classList.remove('hidden', 'error');
     
-    if (isError) {
-        notification.classList.add('error');
-        
-        // Send error to your email
-        emailjs.send('service_9f71ccn', 'template_vlrfz5n', {
-            error_message: message,
-            page_url: window.location.href,
-            user_agent: navigator.userAgent
-        }).then(() => {
-            console.log('Error report sent successfully');
-        }, (error) => {
-            console.error('Failed to send error report:', error);
-        });
-    }
+
     
     notification.classList.add('show');
     
@@ -165,75 +148,8 @@ function showNotification(message, isError = false) {
     }, 5000);
 }
 
-// Enhanced form submission handler
-function handleFormSubmission(form, successMessage, modalId = null) {
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    
-    emailjs.sendForm('service_9f71ccn', 'template_vlrfz5n', form)
-        .then(() => {
-            showNotification(successMessage);
-            form.reset();
-            if (modalId) hideModal(modalId);
-            
-            // Log successful submission
-            console.log(`Form submitted successfully: ${form.id}`);
-        }, (error) => {
-            const errorMsg = `Failed to send message (Error: ${error.status})`;
-            showNotification(errorMsg, true);
-            
-            // Enhanced error logging
-            console.error('Form submission failed:', {
-                formId: form.id,
-                error: error.text,
-                formData: Object.fromEntries(new FormData(form))
-            });
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        });
-}
 
-// Initialize all forms
-function initializeForms() {
-    // Store original button text
-    document.querySelectorAll('form button[type="submit"]').forEach(btn => {
-        btn.dataset.originalText = btn.textContent;
-    });
 
-    // Networking Form
-    document.getElementById('networking-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleFormSubmission(this, 'Networking consultation request sent!', 'networking');
-    });
-    
-    // CCTV Form
-    document.getElementById('cctv-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleFormSubmission(this, 'CCTV service request sent!', 'cctv');
-    });
-    
-    // Troubleshooting Form
-    document.getElementById('troubleshooting-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleFormSubmission(this, 'IT support request sent!', 'troubleshooting');
-    });
-    
-    // Web Development Form
-    document.getElementById('webdev-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleFormSubmission(this, 'Web development inquiry sent!', 'webdev');
-    });
-    
-    // Main Contact Form
-    document.getElementById('contact-form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        handleFormSubmission(this, 'Your message has been sent successfully!');
-    });
-}
 
 // Modal functions
 function showModal(service) {
