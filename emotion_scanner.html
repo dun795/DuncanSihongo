@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Face Emotion Scanner — Single Page App (fixed model loading)</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,#071126 0%, #071a2a 100%);color:#e6eef6}
+    .wrap{max-width:980px;margin:28px auto;padding:18px;background:rgba(255,255,255,0.02);border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 16px;color:var(--muted)}
+    #videoContainer{position:relative;display:flex;gap:12px;flex-wrap:wrap}
+    video#video{border-radius:10px;background:#000;max-width:640px;width:100%;height:auto}
+    canvas#overlay{position:absolute;left:0;top:0}
+    .controls{min-width:260px;padding:12px;background:rgba(255,255,255,0.02);border-radius:8px}
+    .row{display:flex;gap:12px;align-items:center}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#02121a;font-weight:600;cursor:pointer}
+    .muted{color:var(--muted);font-size:13px}
+    ul#results{list-style:none;padding:0;margin:8px 0 0}
+    li{padding:6px 8px;border-radius:6px;background:rgba(255,255,255,0.02);margin-bottom:6px}
+    small{color:var(--muted)}
+    footer{margin-top:12px;color:var(--muted);font-size:13px}
+    .status{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.35)}
+    .debug{margin-top:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:13px}
+    input[type="text"]{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Face Emotion Scanner — Single Page</h1>
+    <p class="lead">Opens your camera, detects a face and estimates basic emotions. No authentication, single page. Works best in good lighting and with one face centered.</p>
+
+    <div id="videoContainer">
+      <div style="position:relative">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="overlay"></canvas>
+      </div>
+
+      <div class="controls">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div class="status" id="status">Idle</div>
+          </div>
+          <div>
+            <button id="btnStart">Start Camera</button>
+            <button id="btnStop" disabled>Stop</button>
+          </div>
+        </div>
+
+        <hr style="margin:10px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+        <div>
+          <label class="muted">Detected emotions (live):</label>
+          <ul id="results"></ul>
+        </div>
+
+        <hr style="margin:10px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+        <div class="muted">Model loader (fix for 404 / wrong URL)</div>
+        <div style="margin-top:8px">
+          <small class="muted">If the app cannot find your models in <code>./models</code>, try one of the options below or paste the correct model folder URL.</small>
+          <div style="margin-top:6px">
+            <input id="modelPathInput" type="text" value="./models" placeholder="Enter model folder URL (e.g. ./models or https://example.com/models)">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="btnCheck">Check & Load Models</button>
+            <button id="btnUseCDN">Use CDN (try public models)</button>
+          </div>
+          <div id="loaderDebug" class="debug" aria-live="polite"></div>
+        </div>
+
+        <hr style="margin:10px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <div class="muted">Notes:</div>
+        <ul class="muted" style="padding-left:18px;margin-top:6px">
+          <li>Requires secure context — run on <code>http://localhost</code> or HTTPS to allow camera access.</li>
+          <li>Model files must be available in the selected model folder. By default the app looks for <code>tiny_face_detector_model-weights_manifest.json</code> and <code>face_expression_model-weights_manifest.json</code> inside that folder (or inside the folder's subfolders).</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      Built with <span style="color:var(--accent)">face-api.js</span> (client-side). This is a demonstration — accuracy is limited and not suitable for clinical/decision-critical use.
+    </footer>
+  </div>
+
+  <!-- Face API from CDN -->
+  <script src="https://unpkg.com/face-api.js/dist/face-api.min.js"></script>
+
+  <script>
+  /*
+    Robust model loader + single-page emotion scanner
+
+    Fix summary:
+      - The app now tries multiple candidate folders and CDN fallbacks to locate the model manifest files.
+      - You can manually paste the model folder URL into the input and click "Check & Load Models".
+      - If model files are not available locally, clicking "Use CDN" will attempt to load public model files hosted on jsDelivr (may work depending on CORS).
+  */
+
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('overlay');
+  const startBtn = document.getElementById('btnStart');
+  const stopBtn = document.getElementById('btnStop');
+  const status = document.getElementById('status');
+  const resultsList = document.getElementById('results');
+  const modelPathInput = document.getElementById('modelPathInput');
+  const btnCheck = document.getElementById('btnCheck');
+  const btnUseCDN = document.getElementById('btnUseCDN');
+  const loaderDebug = document.getElementById('loaderDebug');
+
+  let stream = null;
+  let detectionInterval = null;
+
+  const tinyManifest = 'tiny_face_detector_model-weights_manifest.json';
+  const exprManifest = 'face_expression_model-weights_manifest.json';
+
+  // Candidate folders to try (will be tested in order)
+  const DEFAULT_CANDIDATES = [
+    './models',
+    './models/tiny_face_detector',
+    './models/face_expression',
+    '/models',
+    '/models/tiny_face_detector',
+    '/models/face_expression',
+    location.origin + '/models',
+    location.origin + '/models/tiny_face_detector',
+    location.origin + '/models/face_expression',
+    // jsDelivr mirrors of the official models repo (public) - experimental and subject to CORS
+    'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js-models@master/tiny_face_detector',
+    'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js-models@master/face_expression'
+  ];
+
+  async function urlExists(url, timeoutMs = 5000) {
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      const res = await fetch(url, { method: 'GET', signal: controller.signal });
+      clearTimeout(id);
+      return res.ok;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async function findFolderForManifest(manifestName, candidates) {
+    for (const c of candidates) {
+      const candidate = c.replace(/\/+$/, '');
+      const url = candidate + '/' + manifestName;
+      loaderDebug.innerText = `Checking: ${url}`;
+      // Await a small delay so UI updates are visible
+      await new Promise(r => setTimeout(r, 80));
+      if (await urlExists(url)) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  async function loadModels(customCandidates) {
+    status.textContent = 'Loading models — locating manifests...';
+    loaderDebug.innerText = '';
+
+    const candidates = Array.isArray(customCandidates) && customCandidates.length ? customCandidates : DEFAULT_CANDIDATES;
+
+    // allow user-provided candidate (single string)
+    if (typeof modelPathInput.value === 'string' && modelPathInput.value.trim()) {
+      const userVal = modelPathInput.value.trim();
+      // put user-provided path at the front of the list
+      if (!candidates.includes(userVal)) candidates.unshift(userVal);
+    }
+
+    // find folders for each required manifest (they may be in different subfolders)
+    const tinyFolder = await findFolderForManifest(tinyManifest, candidates);
+    const exprFolder = await findFolderForManifest(exprManifest, candidates);
+
+    if (!tinyFolder || !exprFolder) {
+      status.textContent = 'Model files not found';
+      let msg = 'Could not locate required model manifest files. Tried:\n';
+      const tried = candidates.map(c => '- ' + (c.replace(/\/$/, '')) + '/' + '\n').join('');
+      loaderDebug.innerText = msg + candidates.map(c => c + '/').join('\n') + '\n\nInstructions:\n1) Place the model files next to this HTML file in a folder called "models" (so the manifests are at ./models/face_expression_model-weights_manifest.json and ./models/tiny_face_detector_model-weights_manifest.json).\n2) Or paste a public URL to the folder containing the manifests into the input above and click "Check & Load Models".\n3) As a last resort click "Use CDN" to try public mirrors (may fail due to CORS).';
+      console.warn('Model loader tried candidates:', candidates);
+      return false;
+    }
+
+    status.textContent = 'Loading model weights...';
+
+    try {
+      loaderDebug.innerText = `Loading tiny face detector from: ${tinyFolder}\nLoading expression model from: ${exprFolder}`;
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(tinyFolder),
+        faceapi.nets.faceExpressionNet.loadFromUri(exprFolder)
+      ]);
+      status.textContent = 'Models loaded';
+      loaderDebug.innerText += '\nModels loaded successfully.';
+      return true;
+    } catch (err) {
+      console.error('Error loading models from detected folders', err);
+      status.textContent = 'Failed to load model files';
+      loaderDebug.innerText += '\nFailed to load model files — see console for details.\nIf you see CORS errors, host the models on the same origin or use a proper CORS-enabled host.';
+      return false;
+    }
+  }
+
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+      video.srcObject = stream;
+      await video.play();
+
+      overlay.width = video.videoWidth || 640;
+      overlay.height = video.videoHeight || 480;
+
+      startDetectionLoop();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      status.textContent = 'Camera running — detecting';
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'Camera error: ' + (err.message || err.toString());
+    }
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+      stream = null;
+    }
+    stopDetectionLoop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    status.textContent = 'Stopped';
+    clearOverlay();
+    resultsList.innerHTML = '';
+  }
+
+  function clearOverlay(){
+    const ctx = overlay.getContext('2d');
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+  }
+
+  function startDetectionLoop(){
+    const ctx = overlay.getContext('2d');
+    const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 });
+
+    detectionInterval = setInterval(async () => {
+      if (video.paused || video.ended) return;
+
+      const result = await faceapi.detectSingleFace(video, options).withFaceExpressions();
+      ctx.clearRect(0,0,overlay.width,overlay.height);
+
+      if (result) {
+        const { x, y, width, height } = result.detection.box;
+        // draw box
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#06b6d4';
+        ctx.strokeRect(x, y, width, height);
+
+        // put label
+        const emotions = result.expressions;
+        const entries = Object.entries(emotions).sort((a,b) => b[1] - a[1]);
+
+        const top = entries[0];
+        const label = `${top[0]} (${(top[1]*100).toFixed(0)}%)`;
+        ctx.fillStyle = 'rgba(2,6,23,0.7)';
+        ctx.fillRect(x, y - 28, Math.max(130, ctx.measureText(label).width + 8), 24);
+        ctx.fillStyle = '#e6eef6';
+        ctx.font = '14px Arial';
+        ctx.fillText(label, x + 6, y - 10);
+
+        // update sidebar
+        resultsList.innerHTML = '';
+        for (const [name, value] of entries) {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${name}</strong> — ${(value*100).toFixed(1)}%`;
+          resultsList.appendChild(li);
+        }
+
+        status.textContent = `Face detected — top: ${top[0]} ${(top[1]*100).toFixed(0)}%`;
+      } else {
+        status.textContent = 'No face detected';
+        resultsList.innerHTML = '';
+      }
+    }, 300); // run ~3x per second
+  }
+
+  function stopDetectionLoop(){
+    if (detectionInterval) {
+      clearInterval(detectionInterval);
+      detectionInterval = null;
+    }
+  }
+
+  // Button handlers
+  startBtn.addEventListener('click', async () => {
+    startBtn.disabled = true;
+    status.textContent = 'Preparing — loading models...';
+    const ok = await loadModels();
+    if (ok) {
+      await startCamera();
+    } else {
+      status.textContent = 'Models missing — cannot start camera';
+      startBtn.disabled = false;
+    }
+  });
+
+  stopBtn.addEventListener('click', () => stopCamera());
+
+  btnCheck.addEventListener('click', async () => {
+    btnCheck.disabled = true;
+    status.textContent = 'Checking model location...';
+    await loadModels();
+    btnCheck.disabled = false;
+  });
+
+  btnUseCDN.addEventListener('click', async () => {
+    // prefer CDN mirrors for each model type
+    modelPathInput.value = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js-models@master';
+    btnUseCDN.disabled = true;
+    status.textContent = 'Attempting to load models from CDN (may fail due to CORS)...';
+    const ok = await loadModels([
+      'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js-models@master/tiny_face_detector',
+      'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js-models@master/face_expression'
+    ]);
+    if (ok) status.textContent = 'Models loaded from CDN';
+    btnUseCDN.disabled = false;
+  });
+
+  // cleanup on unload
+  window.addEventListener('beforeunload', () => stopCamera());
+  </script>
+</body>
+</html>
